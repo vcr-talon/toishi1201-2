@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>といし判定</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse; /* 罫線をセル同士に重ね合わせる */
+            padding: 5px; /* セル内の余白 */
+            text-align: center;
+        }
+    </style>
+    <style>
+        td {
+          text-align: center; /* セルのテキストを中央揃えにする */
+        }
+      </style>
+</head>
+<h3>といし判定</h3>
+<body>
+    <p>〖グラインダの無負荷回転数〗〖といしの外径〗グラインダで使用するといしの〖最高使用周速度〗または〖最高使用回転数〗を入力して下さい。<br /></p>
+        <div class="c-form h-adr">
+         <table class="c-form-table">
+          <tr>
+           <th>グラインダの無負荷回転数</th>
+           <th>といしの外径</th>
+           <th>といしの最高使用周速度<span style="color:red;">*</span></th>
+           </tr>
+          <tr>
+           <td rowspan="3"><input type="text" id="noLoad" name="noLoad" onkeyup="Judg()" class="c-form-control--small" value="0" /> rpm（min-1）</td>
+           <td rowspan="3"><input type="text" name="od03" onkeyup="Judg()" id="od03" class="c-form-control--small" value="0" /> mm</td>
+           <td><input type="text" id="speedSeconds02" name="speedSeconds02" onkeyup="Judg()" class="c-form-control--small" value="0"> m/s</td>
+          </tr>
+          <tr>
+           <th>といしの最高使用回転数<span style="color:red;">*</span></th>
+          </tr>
+          <tr>
+          <td><input type="text" id="rpm02" name="rpm02" onkeyup="Judg()" class="c-form-control--small" value="0" /> rpm（min-1）</td>
+          </tr>
+         </table>
+        </div>
+    <p> <span style="color:red;">・単位に注意！<br />
+        ・「*」どちらかを入力。</span></p>
+           
+        <table>
+        <tr>
+         <th style="background-color:rgb(173, 230, 255);">グラインダの無負荷回転数</th>
+         <th style="background-color: rgb(173, 230, 255);">&nbsp;</th>
+         <th style="background-color: rgb(173, 230, 255);">といしの最高使用回転数</th>
+         <th style="background-color: rgb(112, 165, 255);">【判定結果】</th>
+        </tr>
+        <tr>
+         <td><span id="noLoadTxt">0</span> rpm（min-1)</td>
+         <td><span id="sign"></span></td>
+         <td><span id="result03">0</span> rpm（min-1）</td>
+         <td><span id="judg" style="font-weight:bold;">　</span><span data-name="db"></span></td>
+        </tr>
+        </table>
+    
+         <p>
+                <span style="color:red; font-weight: bold; background-color: #f0f0f0; padding: 5px;">
+                  研削といしは必ず”最高使用周速度”以下でご使用ください。
+                </span>
+              </p>
+     
+    <script>
+        function Judg() {
+    var nl = document.getElementById('noLoad').value;
+    var od = document.getElementById('od03').value;
+    var ss = document.getElementById('speedSeconds02').value;
+    var rpm = document.getElementById('rpm02').value;
+
+    var rpm02 = parseInt(rpm, 10);
+    if (isNaN(rpm02)) {
+        document.getElementById('result03').innerHTML = "エラー: 無効な数値入力";
+        return;
+    }
+
+    od = od / 1000;
+    ss = ss * 60;
+
+    if (od === 0) {
+        document.getElementById('result03').innerHTML = "エラー: ゼロ除算";
+        return;
+    }
+
+    var srpm = Math.floor(ss / (od * 3.14));
+
+    document.getElementById('noLoadTxt').innerHTML = nl;
+    document.getElementById('result03').innerHTML = ss === 0 ? rpm02 : srpm;
+
+    if (ss === 0) {
+        if (nl <= rpm02) {
+            document.getElementById('judg').innerHTML = 'OK';
+            document.getElementById('sign').innerHTML = '＜';
+        } else {
+            document.getElementById('judg').innerHTML = '<font color=red>×</font>';
+            document.getElementById('sign').innerHTML = '<font color=red>＞</font>';
+        }
+    } else {
+        if (nl <= srpm) {
+            document.getElementById('judg').innerHTML = 'OK';
+            document.getElementById('sign').innerHTML = '＜';
+        } else {
+            document.getElementById('judg').innerHTML = '<font color=red>×</font>';
+            document.getElementById('sign').innerHTML = '<font color=red>＞</font>';
+        }
+    }
+}
+    </script>
+</body>
+</html>
